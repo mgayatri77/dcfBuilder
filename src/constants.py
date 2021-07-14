@@ -51,4 +51,22 @@ Default_rates = {
     "sales_to_capital_ratio_6_to_10_year" : 1.50,
     "risk_free_rate" : 1.69,
     "initial_cost_of_capital" : 6.74
-}   
+}
+
+excel_list_row_names = {
+    0: "Quantities", 1 :"Revenue", 2 : "Revenue Growth Rate", 3 : "Costs and Expenses", 4 : "Operating Income",
+    5 : "Taxes", 6 : "Tax Rate", 7: "Net Income", 8 : "Reinvestment", 9 : "FCFF", 11 : "Cost of Capital",
+    12 : "Cumulative Discount Factor", 13 : "PV (FCFF)", 14 : "Sales to Capital Ratio"
+}
+
+excel_singular_row_names = {
+    16 : "Terminal Cash Flow", 17 : "Terminal Cost of Capital", 
+    18 : "Terminal Value", 19 : "PV (Terminal Value)", 20 : "PV (Cashflows)", 21 : "Sum of PV", 
+    22 : "Cash", 23 : "Debt", 24 : "Value of Equity", 25 : "Common Shares Outstanding", 
+    26 : "Value per Share", 27 : "Current Price"
+}
+
+excel_column_widths = {
+    "big" : 31, 
+    "small" : 17
+}

@@ -24,7 +24,7 @@ def get_json_from_url_link(url_link):
                 json_data = json.loads(url.read().decode())
                 return json_data
         except urllib.error.HTTPError as e: 
-            print("Error fetching Company Facts Data:", e)
+            print("Error fetching SEC JSON Data ->", e)
             print("Attempt " + str(num_tries) + " out of " + str(MAX_ATTEMPTS))
             num_tries += 1
             time.sleep(0.5)
@@ -67,9 +67,9 @@ def get_company_facts_json_from_ticker(ticker):
     # get company facts from SEC Edgar API
     company_facts_data = get_json_from_url_link(company_facts_url)
     assert(company_facts_data != constants.ERRORCODE), "Unable to fetch Company Facts JSON"
+    print("Loaded SEC JSON data sucessfully!")
     return company_facts_data
 
 if __name__ == "__main__":
     get_company_facts_json_from_ticker("aapl")
     get_stock_price_from_ticker("aapl")
-    print("Loaded Company Facts JSON sucessfully!")
