@@ -7,7 +7,7 @@ To generate a DCF for Oracle Corporation, run:
 ```python
 from dcf import Company
 oracle_dcf = DCF("orcl")
-oracle_dcf.create_excel_sheet(orcl.xlsx)
+oracle_dcf.create_excel_sheet("orcl.xlsx")
 ```
 
 To print the estimated value per share, run: 
