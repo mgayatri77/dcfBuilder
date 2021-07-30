@@ -27,7 +27,7 @@ class DCF:
             elif(i >= 2 and i <= 5):
                 revenue_multiple += self.percent_to_dec(self.rates["growth_rate_2_to_5_year"])
             elif(i >= len(revenues)-1): 
-                revenue_multiple = self.percent_to_dec(self.rates['risk_free_rate'])
+                revenue_multiple += self.percent_to_dec(self.rates['risk_free_rate'])
             else: 
                 fraction = self.percent_to_dec(self.rates["growth_rate_2_to_5_year"] - self.rates["risk_free_rate"])
                 growth_rate = fraction*(self.num_years-i)/(self.num_years - 5)

@@ -22,6 +22,7 @@ XBRL_tags = {
     "Current Long Term Debt" : ["LongTermDebtCurrent"],
     "Noncurrent Long Term Debt" : ["LongTermDebtNoncurrent"]
 }
+
 Units_map = {
     "Revenue" :  "USD", 
     "COGS" :  "USD", 
@@ -39,6 +40,7 @@ Units_map = {
     "Current Long Term Debt" :"USD", 
     "Noncurrent Long Term Debt" :"USD"
 }
+
 Default_rates = {
     "marginal_tax_rate" : 25.00,
     "growth_rate_1_year" : 50.00,
