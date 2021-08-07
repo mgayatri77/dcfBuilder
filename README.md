@@ -15,6 +15,6 @@ To print the estimated value per share, run:
 ```python
 from dcf import Company
 oracle_dcf = DCF("orcl")
-npv_output = oracle_dcf.get_npv_outputs()
+npv_output = oracle_dcf.compute_npv_outputs()
 print(npv_output['Value per Share'])
 ```
