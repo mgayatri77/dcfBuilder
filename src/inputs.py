@@ -94,4 +94,5 @@ def get_inputs(ticker, form_type="10-K", num_filings=1):
     return inputs
 
 if __name__ == "__main__":
-    inputs = get_inputs("ko")
+    inputs = get_inputs("msft")
+    print(inputs)

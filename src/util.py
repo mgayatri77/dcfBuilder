@@ -1,8 +1,16 @@
+from openpyxl.utils.cell import get_column_letter
 import yfinance as yf
+from openpyxl.utils import get_column_letter
 import urllib.request
 import json
 import constants
 import time
+
+def percent_to_dec(number):
+    return number/100.0
+
+def get_excel_cell(col, row): 
+    return get_column_letter(col) + str(row)
 
 def get_stock_price_from_ticker(ticker): 
     # remove whitespace and convert to uppercase
