@@ -6,12 +6,22 @@ import json
 import constants
 import time
 
-def percent_to_dec(number):
-    return number/100.0
+# divides a percentage by 100. For example, 98% -> 0.98
+# @param perc - the percentage
+# @return float - number divided by 100.0
+def percent_to_dec(perc):
+    return perc/100.0
 
+# converts column and row to excel format. For example 1,1 -> A1
+# @param col - excel column number (1-based)
+# @param row - excel row number (1-based)
+# @ return string - cell number in excel 
 def get_excel_cell(col, row): 
     return get_column_letter(col) + str(row)
 
+# pulls stock price from ticker using yfinance
+# @param ticker - stock ticker
+# @return float - regular market stock price
 def get_stock_price_from_ticker(ticker): 
     # remove whitespace and convert to uppercase
     ticker = ticker.strip().upper()
@@ -21,16 +31,24 @@ def get_stock_price_from_ticker(ticker):
     price_key = "regularMarketPrice" 
     return stock_info[price_key]
 
+# gets JSON from given URL using urllib, catches HTTPErrors 
+# if they occur during execution of request 
+# since the SEC API fails often, this attempts to get data 
+# from SEC 'MAX_ATTEMPTS' times before stopping
+# @param url_link - URL string
+# @return json - json_data as dictionary 
 def get_json_from_url_link(url_link):
     # fetch and return JSON from url_link
     MAX_ATTEMPTS = 30
     num_tries = 1
 
+    # try 'MAX_ATTEMPTS' times to fetch data
     while(num_tries < MAX_ATTEMPTS): 
         try: 
             with urllib.request.urlopen(url_link) as url:
                 json_data = json.loads(url.read().decode())
                 return json_data
+        # catch HTTP Errors and print number of attempts completed
         except urllib.error.HTTPError as e: 
             print("Error fetching SEC JSON Data ->", e)
             print("Attempt " + str(num_tries) + " out of " + str(MAX_ATTEMPTS))
@@ -40,6 +58,9 @@ def get_json_from_url_link(url_link):
     #return error code if URL failed to load        
     return constants.ERRORCODE
 
+# gets CIK code from given stock ticker using SEC Ticker to CIK map
+# @param ticker - stock ticker
+# @return string - CIK code
 def get_cik_from_ticker(ticker):
     # remove whitespace and convert to uppercase, set initial CIK to -1
     ticker = ticker.strip().upper()
@@ -56,6 +77,9 @@ def get_cik_from_ticker(ticker):
     # return error code if ticker not found
     return constants.ERRORCODE
 
+# gets company facts data for given stock ticker using SEC API
+# @param ticker - stock ticker
+# @return dictionary - JSON as dictionary containing company facts data
 def get_company_facts_json_from_ticker(ticker):
     cik = get_cik_from_ticker(ticker)
 

@@ -5,12 +5,15 @@ from util import percent_to_dec
 from util import get_excel_cell
 
 class spreadsheet:
+    "Class to create excel sheet containing DCF model"
     def __init__(self, ticker, inputs, num_years=10, rates=constants.Default_rates):
         self.ticker = ticker
         self.num_years = num_years
         self.rates = rates
         self.inputs = inputs
 
+    # sets revenue and revenue growth rate rows for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_revenue(self, ws):
         row = constants.excel_list_row_numbers["Revenue"]
         revenue_cell = get_excel_cell(2, row)
@@ -35,7 +38,10 @@ class spreadsheet:
                 growth_rate = fraction*(self.num_years-i)/(self.num_years - 5)
                 ws[growth_cell] = growth_rate + percent_to_dec(self.rates["risk_free_rate"])
             ws[revenue_cell] = "=(1+" + growth_cell + ")*" + prev_revenue_cell
-    
+
+    # sets operating income, costs and expenses and operating
+    # margin rows for the given worksheet
+    # @param ws - reference to excel worksheet    
     def set_operating_income(self, ws): 
         row = constants.excel_list_row_numbers["Costs and Expenses"]
         revenue_row = constants.excel_list_row_numbers["Revenue"]
@@ -76,6 +82,8 @@ class spreadsheet:
             ws[operating_income_cell] = "=" + revenue_cell + "*" + operating_margin_cell
             ws[costs_and_expenses_cell] = "=" + revenue_cell + "-" + operating_income_cell
     
+    # sets tax and tax rate rows for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_taxes(self, ws): 
         row = constants.excel_list_row_numbers["Taxes"]
         oi_row = constants.excel_list_row_numbers["Operating Income"]
@@ -110,8 +118,9 @@ class spreadsheet:
                 diff = "ABS(" + initial_trc + "-" + final_trc + ")/" + str(self.num_years/2)
                 ws[tax_rate_cell] = "=" + prev_tax_rate_cell + "+" + diff
             ws[taxes_cell] = "=" + tax_rate_cell + "*" + operating_income_cell
-
     
+    # sets net income row for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_net_income(self, ws): 
         row = constants.excel_list_row_numbers["Net Income"]
         oi_row = constants.excel_list_row_numbers["Operating Income"]
@@ -126,6 +135,8 @@ class spreadsheet:
             else:
                 ws[net_income_cell] = "=" + operating_income_cell + "*(1-" + tax_rate_cell + ")"
     
+    # sets sales to capital ratio row for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_s_to_c_ratio(self, ws): 
         row = constants.excel_list_row_numbers["Sales to Capital Ratio"]
         for i in range(1, self.num_years+2):
@@ -137,6 +148,8 @@ class spreadsheet:
             else: 
                 ws[cell] = self.rates["sales_to_capital_ratio_6_to_10_year"]
     
+    # sets sales to capital ratio row for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_reinvestment(self, ws): 
         row = constants.excel_list_row_numbers["Reinvestment"]
         s_to_c_row = constants.excel_list_row_numbers["Sales to Capital Ratio"]
@@ -154,7 +167,9 @@ class spreadsheet:
                 ws[reinvestment_cell] = conditional + formula + ",0)"
             else: 
                 ws[reinvestment_cell] = "=" + formula
-        
+
+    # sets free cash flow rows for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_free_cash_flow(self, ws): 
         row = constants.excel_list_row_numbers["FCFF"]
         net_income_row = constants.excel_list_row_numbers["Net Income"]
@@ -166,12 +181,16 @@ class spreadsheet:
             reinvestment_cell = get_excel_cell(2+i, reinvestment_row)
             ws[fcf_cell] = "=" + net_income_cell + "-" + reinvestment_cell
     
+    # sets cost of capital row for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_cost_of_capital(self, ws):
         row = constants.excel_list_row_numbers["Cost of Capital"]
         for i in range(1, self.num_years+2): 
             cell = get_excel_cell(2+i, row)
             ws[cell] = percent_to_dec(self.rates["initial_cost_of_capital"])
     
+    # sets discount rate row for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_cumulative_discount_factor(self, ws): 
         row = constants.excel_list_row_numbers["Cumulative Discount Factor"]
         coc_row = constants.excel_list_row_numbers["Cost of Capital"]
@@ -184,6 +203,8 @@ class spreadsheet:
                 coc_cell = get_excel_cell(2+i, coc_row)
                 ws[df_cell] = "=" + prev_df_cell + "/(1+" + coc_cell + ")"
     
+    # sets present value row for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_present_value(self, ws): 
         row = constants.excel_list_row_numbers["PV (FCFF)"]
         fcf_row = constants.excel_list_row_numbers["FCFF"]
@@ -195,6 +216,8 @@ class spreadsheet:
             df_cell = get_excel_cell(2+i, df_row)
             ws[cell] = "=" + fcf_cell + "*" + df_cell
 
+    # sets npv outputs cells (terminal value, cash flow etc.) for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_npv_outputs(self, ws): 
         last_col = self.num_years+3
         fcf_row = constants.excel_list_row_numbers["FCFF"]
@@ -221,6 +244,8 @@ class spreadsheet:
         ws[get_excel_cell(2, pv_sum_row)] = "=" + get_excel_cell(2, pv_terminal_row) \
             + "+" + get_excel_cell(2, pv_cashflows_row)
     
+    # sets overall npv valuation for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_npv_valutaion(self, ws): 
         cash_row = constants.excel_singular_row_numbers["Cash"]
         debt_row = constants.excel_singular_row_numbers["Debt"]
@@ -241,6 +266,8 @@ class spreadsheet:
             "/" + get_excel_cell(2, shares_row)
         ws[get_excel_cell(2, price_row)] = self.inputs["Price"][0]
 
+    # sets row and column names for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_row_and_col_names(self, ws):
         row_names = {**constants.excel_list_row_numbers, **constants.excel_singular_row_numbers}
         for k, v in row_names.items(): 
@@ -254,6 +281,8 @@ class spreadsheet:
             else: 
                 ws[get_excel_cell(i+2, 1)] = "Year " + str(i)
 
+    # formats excel sheet worksheet
+    # @param ws - reference to excel worksheet
     def format_excel_sheet(self, ws): 
         col = get_column_letter(1)
         ws.column_dimensions[get_column_letter(1)].width = constants.excel_column_widths["big"]
@@ -280,6 +309,8 @@ class spreadsheet:
             else: 
                 ws[get_excel_cell(2, v)].number_format = '#,##0_);(#,##0)'
 
+    # sets all cashflows for the DCF in the given worksheet 
+    # @param ws - reference to excel worksheet
     def set_cashflows(self, ws): 
         self.set_revenue(ws)
         self.set_operating_income(ws)
@@ -289,6 +320,8 @@ class spreadsheet:
         self.set_reinvestment(ws)
         self.set_free_cash_flow(ws)
     
+    # sets all npv output cells for the given worksheet
+    # @param ws - reference to excel worksheet
     def set_npv(self, ws):
         self.set_cost_of_capital(ws)
         self.set_cumulative_discount_factor(ws)
@@ -296,8 +329,13 @@ class spreadsheet:
         self.set_npv_outputs(ws)
         self.set_npv_valutaion(ws)
 
+    # creates DCF model excel sheet in the given file
+    # @param filename - path to new excel file
     def create_excel_sheet(self, filename):
-        assert(filename.endswith(".xlsx")), "File must have .xlsx extension"
+        # add .xlsx extension if it doesn't exist already
+        if((not filename.endswith(".xlsx")) and (not filename.endswith(".xls"))): 
+            print("Adding .xlsx extension to given filename")
+            filename += ".xlsx"
         
         wb = Workbook()
         ws = wb.active
@@ -310,4 +348,4 @@ class spreadsheet:
 
         wb.save(filename)
         print('DCF Spreadsheet generated succesfully!')
-        print('Filename: ', filename)
+        print('Filename:', filename)

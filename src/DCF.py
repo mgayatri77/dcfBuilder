@@ -8,9 +8,10 @@ from compute import compute
 class DCF:
     def __init__(self, ticker, form_type="10-K", num_past_filings=1, num_years=10):
         self.ticker = ticker
-        self.num_years = num_years
+        self.num_years = 10
         self.rates = constants.Default_rates
-        self.inputs = inputs.get_inputs(ticker, form_type, num_past_filings)
+        # only supports 10-K with 1 past filing right now
+        self.inputs = inputs.get_inputs(ticker, "10-K", 1)
     
     def compute_npv_outputs(self):
         npv = compute(self.ticker, self.inputs, self.num_years)
@@ -20,14 +21,20 @@ class DCF:
         sheet = spreadsheet(self.ticker, self.inputs, self.num_years, self.rates)
         sheet.create_excel_sheet(filename)
     
-    def set_risk_free_rate(self, risk_free_rate): 
-        self.rates['risk_free_rate'] = risk_free_rate
+    def set_rates(self, **new_rates):
+        for key, value in new_rates.items():  
+            if(key in self.rates): 
+                self.rates[key] = value
+            else:
+                print("Could not find rate parameter: %s" % key)
+                print("Check constants.py for the correct name")
+
+    def reset_rates(self): 
+        self.rates = constants.Default_rates
 
 if __name__ == "__main__":
-    tickers = ['aapl', 'pfe', 'msft', 'jpm', 't']
-    for i in tickers: 
-        dcf = DCF(i)
-        npv = dcf.compute_npv_outputs()
-        dcf.create_excel_sheet(i + ".xlsx")
-        print(npv["Value per Share"])
-        print(npv["Current Price"])
+    dcf = DCF("AAPL")
+    npv = dcf.compute_npv_outputs()
+    dcf.create_excel_sheet("Apple.xlsx")
+    print("%.2f" % npv["Value per Share"])
+    print("%.2f" % npv["Current Price"])
