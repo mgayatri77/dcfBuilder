@@ -5,7 +5,7 @@ A tool that takes in a stock ticker (listed on NYSE/NASDAQ) and outputs a DCF mo
 To generate a DCF for Oracle Corporation, run: 
 
 ```python
-from dcf import Company
+from DCF import DCF
 oracle_dcf = DCF("orcl")
 oracle_dcf.create_excel_sheet("orcl.xlsx")
 ```
@@ -13,7 +13,7 @@ oracle_dcf.create_excel_sheet("orcl.xlsx")
 To print the estimated value per share, run: 
 
 ```python
-from dcf import Company
+from DCF import DCF
 oracle_dcf = DCF("orcl")
 npv_output = oracle_dcf.compute_npv_outputs()
 print(npv_output['Value per Share'])
