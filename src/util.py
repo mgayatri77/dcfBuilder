@@ -5,6 +5,7 @@ import urllib.request
 import json
 import constants
 import time
+import requests
 
 # divides a percentage by 100. For example, 98% -> 0.98
 # @param perc - the percentage
@@ -44,8 +45,12 @@ def get_json_from_url_link(url_link):
 
     # try 'MAX_ATTEMPTS' times to fetch data
     while(num_tries < MAX_ATTEMPTS): 
-        try: 
-            with urllib.request.urlopen(url_link) as url:
+        try:
+            url_req = urllib.request.Request(
+                url = url_link,
+                headers = constants.headers
+            )
+            with urllib.request.urlopen(url_req) as url:
                 json_data = json.loads(url.read().decode())
                 return json_data
         # catch HTTP Errors and print number of attempts completed
@@ -53,7 +58,7 @@ def get_json_from_url_link(url_link):
             print("Error fetching SEC JSON Data ->", e)
             print("Attempt " + str(num_tries) + " out of " + str(MAX_ATTEMPTS))
             num_tries += 1
-            time.sleep(0.5)
+            time.sleep(2)
     
     #return error code if URL failed to load        
     return constants.ERRORCODE

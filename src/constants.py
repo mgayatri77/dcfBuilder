@@ -4,6 +4,7 @@ ERRORCODE = -7
 # links to SEC API
 CIK_link = "https://www.sec.gov/files/company_tickers.json"
 Company_Facts_link = "https://data.sec.gov/api/xbrl/companyfacts/$$CIK$$.json"
+headers = {'User-Agent': 'Mohit Gayatri (mohitgayatri77@gmail.com)'}
 
 # XBRL tags of required quantities as dictionary
 XBRL_tags = {
